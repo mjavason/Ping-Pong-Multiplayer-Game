@@ -94,16 +94,23 @@ function moveBall() {
     ballX >= paddle1X &&
     ballX <= paddle1X + paddle1.offsetWidth
   ) {
-    ballSpeedY = -ballSpeedY * speedIncrease; // Increase speed and change direction
-    ballSpeedX *= speedIncrease; // Increase speed in X direction
+    ballSpeedY = -ballSpeedY; // Change direction upwards
+    ballY = paddle1.offsetTop + paddle1.offsetHeight; // Position the ball just above the paddle
+    // Adjust the X speed based on where the ball hits the paddle
+    const hitPosition = (ballX - paddle1X) / paddle1.offsetWidth; // Hit position from 0 to 1
+    ballSpeedX = (hitPosition - 0.5) * speedIncrease * 4; // Adjust X speed based on hit position
   }
+
   if (
     ballY >= paddle2.offsetTop - ball.offsetHeight &&
     ballX >= paddle2X &&
     ballX <= paddle2X + paddle2.offsetWidth
   ) {
-    ballSpeedY = -ballSpeedY * speedIncrease; // Increase speed and change direction
-    ballSpeedX *= speedIncrease; // Increase speed in X direction
+    ballSpeedY = -ballSpeedY; // Change direction downwards
+    ballY = paddle2.offsetTop - ball.offsetHeight; // Position the ball just below the paddle
+    // Adjust the X speed based on where the ball hits the paddle
+    const hitPosition = (ballX - paddle2X) / paddle2.offsetWidth; // Hit position from 0 to 1
+    ballSpeedX = (hitPosition - 0.5) * speedIncrease * 4; // Adjust X speed based on hit position
   }
 
   // Ball out of bounds (score)
@@ -142,7 +149,7 @@ function updateScore() {
 function displayGameOver() {
   scoreDisplay.style.display = 'none';
   ball.style.display = 'none';
-  
+
   const gameOverMessage = document.createElement('div');
   gameOverMessage.textContent = `Game Over. Player ${
     score1 === 10 ? 1 : 2
