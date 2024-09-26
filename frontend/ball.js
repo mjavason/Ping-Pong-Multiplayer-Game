@@ -11,20 +11,23 @@ let score1 = 0;
 let score2 = 0;
 let gameOver = false;
 let isBallInControl = false;
+let playerTeam = 'paddle1';
 
 function initBallEvents(socket) {
   // Listen for ball updates from the server
   socket.on('updateBallPosition', (data) => {
-    console.log('updateBallPosition');
-
-    // if (!isBallInControl) {
       ballX = data.ballX;
       ballY = data.ballY;
       ballSpeedX = data.ballSpeedX;
       ballSpeedY = data.ballSpeedY;
       ball.style.left = ballX + 'px';
       ball.style.top = ballY + 'px';
-    // }
+  });
+
+  // Listen for team assignment
+  socket.on('teamAssignment', (data) => {
+    console.log(data);
+    playerTeam = data;
   });
 
   requestAnimationFrame(moveBall);
@@ -100,13 +103,16 @@ function handlePaddleHit(paddle, socket) {
     paddle1.offsetWidth; // Hit position from 0 to 1
   ballSpeedX = (hitPosition - 0.5) * 4; // Adjust X speed based on hit position
 
-  // Broadcast the new ball position
-  socket.emit('broadcastBallPosition', {
-    ballX,
-    ballY,
-    ballSpeedX,
-    ballSpeedY,
-  });
+  if (playerTeam == paddle) {
+    console.log('Broadcast Ball Position');
+    // Broadcast the new ball position
+    socket.emit('broadcastBallPosition', {
+      ballX,
+      ballY,
+      ballSpeedX,
+      ballSpeedY,
+    });
+  }
 }
 
 function resetBall() {

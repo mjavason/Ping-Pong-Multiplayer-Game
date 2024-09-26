@@ -1,32 +1,32 @@
-// Store ball state
+import { Server, Socket } from 'socket.io';
+
+let players: { id: string; team: 'paddle1' | 'paddle2' | null }[] = [];
 let ballState = {
   ballX: 292.5,
   ballY: 192.5,
   ballSpeedX: 2,
   ballSpeedY: 2,
 };
+let paddlePositions = { paddle1: 160, paddle2: 160 }; // Track paddle positions
+let lastHitTeam: 'paddle1' | 'paddle2' | null = null;
 
-let users: { [key: string]: string } = {};
-let paddlePositions = {
-  paddle1: 160,
-  paddle2: 160,
-};
+export function setupSocket(io: Server) {
+  io.on('connection', (socket: Socket) => {
+    console.log(`User connected: ${socket.id}`);
 
-export function setupSocket(io: any) {
-  io.on('connection', (socket: any) => {
-    console.log('A user connected:', socket.id);
+    // Assign player to a team (side1 or side2)
+    let playerTeam: 'paddle1' | 'paddle2' | null = null;
+    if (players.length === 0) {
+      playerTeam = 'paddle1';
+    } else if (players.length === 1) {
+      playerTeam = 'paddle2';
+    }
 
-    socket.on('register', (userId: string) => {
-      users[userId] = socket.id;
-      socket.userId = userId;
-      console.log('User registered:', userId);
+    players.push({ id: socket.id, team: playerTeam });
+    console.log(`Assigned player ${socket.id} to team ${playerTeam}`);
 
-      // Emit current paddle positions to the newly connected user
-      socket.emit('updatePaddlePositions', paddlePositions);
-
-      // Emit the ball position to the newly connected user
-      socket.emit('updateBallPosition', ballState);
-    });
+    // Emit the team assignment to the player
+    socket.emit('teamAssignment', playerTeam);
 
     // Start ball movement
     socket.on('startBall', () => {
@@ -34,7 +34,6 @@ export function setupSocket(io: any) {
     });
 
     socket.on('broadcastBallPosition', (data: any) => {
-      console.log('Ball reset');
       ballState = data; // Update ball state on the server
       socket.broadcast.emit('updateBallPosition', ballState); // Broadcast new ball position to other users
     });
@@ -54,8 +53,8 @@ export function setupSocket(io: any) {
     });
 
     socket.on('disconnect', () => {
-      console.log('A user disconnected:', socket.userId);
-      delete users[socket.userId];
+      players = players.filter((player) => player.id !== socket.id);
+      console.log(`User disconnected: ${socket.id}`);
     });
   });
 }
