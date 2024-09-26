@@ -34,6 +34,7 @@ export function setupSocket(io: any) {
     });
 
     socket.on('broadcastBallPosition', (data: any) => {
+      console.log('Ball reset');
       ballState = data; // Update ball state on the server
       socket.broadcast.emit('updateBallPosition', ballState); // Broadcast new ball position to other users
     });

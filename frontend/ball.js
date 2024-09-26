@@ -15,14 +15,16 @@ let isBallInControl = false;
 function initBallEvents(socket) {
   // Listen for ball updates from the server
   socket.on('updateBallPosition', (data) => {
-    if (!isBallInControl) {
+    console.log('updateBallPosition');
+
+    // if (!isBallInControl) {
       ballX = data.ballX;
       ballY = data.ballY;
       ballSpeedX = data.ballSpeedX;
       ballSpeedY = data.ballSpeedY;
       ball.style.left = ballX + 'px';
       ball.style.top = ballY + 'px';
-    }
+    // }
   });
 
   requestAnimationFrame(moveBall);
@@ -112,6 +114,8 @@ function resetBall() {
   ballY = gameArea.clientHeight / 2 - ball.offsetHeight / 2;
   ballSpeedX = 2 * (Math.random() > 0.5 ? 1 : -1); // Reset speed but randomize the direction
   ballSpeedY = 2 * (Math.random() > 0.5 ? 1 : -1); // Reset Y direction too
+
+  console.log('Ball reset');
 
   socket.emit('broadcastBallPosition', {
     ballX,
