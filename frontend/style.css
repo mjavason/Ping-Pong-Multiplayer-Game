@@ -1,55 +1,61 @@
 /* styles.css */
-body {
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #222;
-    color: #fff;
-    font-family: Arial, sans-serif;
-  }
-  
-  #gameArea {
-    position: relative;
-    width: 600px;
-    height: 400px;
-    border: 3px solid white;
-    background-color: black;
-  }
-  
-  .paddle {
-    position: absolute;
-    width: 10px;
-    height: 80px;
-    background-color: white;
-  }
-  
-  #paddle1 {
-    left: 10px;
-    top: 160px;
-  }
-  
-  #paddle2 {
-    right: 10px;
-    top: 160px;
-  }
-  
-  #ball {
-    position: absolute;
-    width: 15px;
-    height: 15px;
-    background-color: red;
-    border-radius: 50%;
-    left: 292.5px;
-    top: 192.5px;
-  }
-  
-  #score {
-    position: absolute;
-    top: 10px;
-    width: 100%;
-    text-align: center;
-    font-size: 24px;
-  }
-  
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none; /* Disable text selection */
+}
+
+body,
+html {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+#gameArea {
+  width: 60vw; /* Narrower width for portrait mode */
+  height: 90vh; /* Taller height for portrait mode */
+  background-color: #222;
+  position: relative;
+  border: 2px solid #fff;
+}
+
+#paddle1,
+#paddle2 {
+  width: 20vw; /* Paddles are wider for easier touch control */
+  height: 2vh; /* Thin paddles */
+  background-color: #fff;
+  position: absolute;
+  left: calc(50% - 10vw); /* Center paddles horizontally */
+}
+
+#paddle1 {
+  top: 0; /* Paddle 1 at the top */
+}
+
+#paddle2 {
+  bottom: 0; /* Paddle 2 at the bottom */
+}
+
+#ball {
+  width: 2vh; /* Ball size proportional to height */
+  height: 2vh;
+  background-color: #fff;
+  position: absolute;
+  border-radius: 50%;
+}
+
+#score {
+  color: #fff;
+  position: absolute;
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Adjust to perfectly center */
+  font-size: 5vh; /* Larger font size for better visibility */
+  z-index: 10; /* Ensure score is above other elements */
+}

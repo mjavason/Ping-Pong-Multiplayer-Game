@@ -5,73 +5,110 @@ const paddle2 = document.getElementById('paddle2');
 const ball = document.getElementById('ball');
 const scoreDisplay = document.getElementById('score');
 
-let paddle1Y = 160;
-let paddle2Y = 160;
+let paddle1X = 160;
+let paddle2X = 160;
 let ballX = 292.5;
 let ballY = 192.5;
 let ballSpeedX = 2;
 let ballSpeedY = 2;
-let speedIncrease = 0.1; // Speed increment after each paddle hit
+let speedIncrease = 1.1; // Increase speed by 10% on each hit
 let score1 = 0;
 let score2 = 0;
 
-// Make paddles draggable
+// Make paddles draggable (both mouse and touch)
 let isDragging1 = false;
 let isDragging2 = false;
 
-// Paddle 1 drag events
+// Paddle 1 drag events (Mouse)
 paddle1.addEventListener('mousedown', () => (isDragging1 = true));
 document.addEventListener('mouseup', () => (isDragging1 = false));
 document.addEventListener('mousemove', (e) => {
   if (isDragging1) {
-    let newY = e.clientY - gameArea.offsetTop - paddle1.offsetHeight / 2;
-    if (newY < 0) newY = 0;
-    if (newY > gameArea.clientHeight - paddle1.offsetHeight)
-      newY = gameArea.clientHeight - paddle1.offsetHeight;
-    paddle1Y = newY;
-    paddle1.style.top = paddle1Y + 'px';
+    handleDrag(e.clientX, 'paddle1');
   }
 });
 
-// Paddle 2 drag events
+// Paddle 1 drag events (Touch)
+paddle1.addEventListener('touchstart', () => (isDragging1 = true));
+document.addEventListener('touchend', () => (isDragging1 = false));
+document.addEventListener('touchmove', (e) => {
+  if (isDragging1) {
+    const touch = e.touches[0];
+    handleDrag(touch.clientX, 'paddle1');
+  }
+});
+
+// Paddle 2 drag events (Mouse)
 paddle2.addEventListener('mousedown', () => (isDragging2 = true));
 document.addEventListener('mouseup', () => (isDragging2 = false));
 document.addEventListener('mousemove', (e) => {
   if (isDragging2) {
-    let newY = e.clientY - gameArea.offsetTop - paddle2.offsetHeight / 2;
-    if (newY < 0) newY = 0;
-    if (newY > gameArea.clientHeight - paddle2.offsetHeight)
-      newY = gameArea.clientHeight - paddle2.offsetHeight;
-    paddle2Y = newY;
-    paddle2.style.top = paddle2Y + 'px';
+    handleDrag(e.clientX, 'paddle2');
   }
 });
+
+// Paddle 2 drag events (Touch)
+paddle2.addEventListener('touchstart', () => (isDragging2 = true));
+document.addEventListener('touchend', () => (isDragging2 = false));
+document.addEventListener('touchmove', (e) => {
+  if (isDragging2) {
+    const touch = e.touches[0];
+    handleDrag(touch.clientX, 'paddle2');
+  }
+});
+
+function handleDrag(x, paddle) {
+  const paddleElement = document.getElementById(paddle);
+  let newX = x - gameArea.offsetLeft - paddleElement.offsetWidth / 2;
+
+  // Constrain the paddles within the game area
+  if (newX < 0) newX = 0;
+  if (newX > gameArea.clientWidth - paddleElement.offsetWidth) {
+    newX = gameArea.clientWidth - paddleElement.offsetWidth;
+  }
+
+  if (paddle === 'paddle1') {
+    paddle1X = newX;
+    paddle1.style.left = paddle1X + 'px';
+  } else if (paddle === 'paddle2') {
+    paddle2X = newX;
+    paddle2.style.left = paddle2X + 'px';
+  }
+}
 
 function moveBall() {
   ballX += ballSpeedX;
   ballY += ballSpeedY;
 
-  // Ball collision with top or bottom wall
-  if (ballY <= 0 || ballY >= gameArea.clientHeight - ball.offsetHeight) {
-    ballSpeedY = -ballSpeedY;
+  // Ball collision with left or right wall
+  if (ballX <= 0 || ballX >= gameArea.clientWidth - ball.offsetWidth) {
+    ballSpeedX = -ballSpeedX;
   }
 
   // Ball collision with paddles
-  if (ballX <= paddle1.offsetLeft + paddle1.offsetWidth && ballY >= paddle1Y && ballY <= paddle1Y + paddle1.offsetHeight) {
-    ballSpeedX = -(ballSpeedX + speedIncrease); // Increase speed and change direction
-    ballSpeedY += (ballSpeedY > 0 ? speedIncrease : -speedIncrease); // Increase speed in Y direction
+  if (
+    ballY <= paddle1.offsetTop + paddle1.offsetHeight &&
+    ballX >= paddle1X &&
+    ballX <= paddle1X + paddle1.offsetWidth
+  ) {
+    ballSpeedY = -ballSpeedY * speedIncrease; // Increase speed and change direction
+    ballSpeedX *= speedIncrease; // Increase speed in X direction
   }
-  if (ballX >= paddle2.offsetLeft - ball.offsetWidth && ballY >= paddle2Y && ballY <= paddle2Y + paddle2.offsetHeight) {
-    ballSpeedX = -(ballSpeedX - speedIncrease); // Increase speed and change direction
-    ballSpeedY += (ballSpeedY > 0 ? speedIncrease : -speedIncrease); // Increase speed in Y direction
+  if (
+    ballY >= paddle2.offsetTop - ball.offsetHeight &&
+    ballX >= paddle2X &&
+    ballX <= paddle2X + paddle2.offsetWidth
+  ) {
+    ballSpeedY = -ballSpeedY * speedIncrease; // Increase speed and change direction
+    ballSpeedX *= speedIncrease; // Increase speed in X direction
   }
 
   // Ball out of bounds (score)
-  if (ballX <= 0) {
+  if (ballY <= 0) {
     score2++;
     resetBall();
   }
-  if (ballX >= gameArea.clientWidth - ball.offsetWidth) {
+  if (ballY >= gameArea.clientHeight - ball.offsetHeight) {
     score1++;
     resetBall();
   }
