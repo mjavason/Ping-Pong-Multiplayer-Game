@@ -1,7 +1,7 @@
 // app.js
 
-const socket = io('http://localhost:5000');
-// const socket = io('https://ping-pong-multiplayer-game-backend.onrender.com');
+// const socket = io('http://localhost:5000');
+const socket = io('https://ping-pong-multiplayer-game-backend.onrender.com');
 
 // Listen for the start of the ball movement
 socket.on('startBall', () => {
