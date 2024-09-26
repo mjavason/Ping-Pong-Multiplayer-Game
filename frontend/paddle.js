@@ -10,6 +10,14 @@ function initPaddleEvents(socket) {
   let isDragging1 = false;
   let isDragging2 = false;
 
+  // Listen for updated paddle positions from the server
+  socket.on('updatePaddlePositions', (positions) => {
+    paddle1X = positions.paddle1;
+    paddle2X = positions.paddle2;
+    paddle1.style.left = paddle1X + 'px';
+    paddle2.style.left = paddle2X + 'px';
+  });
+
   // Paddle 1 drag events (Mouse)
   paddle1.addEventListener('mousedown', () => (isDragging1 = true));
   document.addEventListener('mouseup', () => (isDragging1 = false));

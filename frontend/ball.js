@@ -31,52 +31,55 @@ function initBallEvents(socket) {
 function moveBall() {
   if (gameOver) return; // Exit if the game is over
 
-  if (isBallInControl) {
-    ballX += ballSpeedX;
-    ballY += ballSpeedY;
-
-    // Ball collision with left or right wall
-    if (ballX <= 0 || ballX >= gameArea.clientWidth - ball.offsetWidth) {
-      ballSpeedX = -ballSpeedX;
-    }
-
-    // Ball collision with paddles
-    if (
-      ballY <= paddle1.offsetTop + paddle1.offsetHeight &&
-      ballX >= paddle1X &&
-      ballX <= paddle1X + paddle1.offsetWidth
-    ) {
-      handlePaddleHit('paddle1', socket);
-    }
-
-    if (
-      ballY >= paddle2.offsetTop - ball.offsetHeight &&
-      ballX >= paddle2X &&
-      ballX <= paddle2X + paddle2.offsetWidth
-    ) {
-      handlePaddleHit('paddle2', socket);
-    }
-
-    // Ball out of bounds (score)
-    if (ballY <= 0) {
-      score2++;
-      resetBall();
-    }
-    if (ballY >= gameArea.clientHeight - ball.offsetHeight) {
-      score1++;
-      resetBall();
-    }
-
-    // Check for game over condition
-    if (score1 === 10 || score2 === 10) {
-      gameOver = true;
-      displayGameOver();
-    }
-
-    ball.style.left = ballX + 'px';
-    ball.style.top = ballY + 'px';
-    updateScore();
+  if (!isBallInControl) {
+    isBallInControl = true; // Kickstart the ball movement
   }
+
+  // Ball is in motion
+  ballX += ballSpeedX;
+  ballY += ballSpeedY;
+
+  // Ball collision with left or right wall
+  if (ballX <= 0 || ballX >= gameArea.clientWidth - ball.offsetWidth) {
+    ballSpeedX = -ballSpeedX;
+  }
+
+  // Ball collision with paddles
+  if (
+    ballY <= paddle1.offsetTop + paddle1.offsetHeight &&
+    ballX >= paddle1X &&
+    ballX <= paddle1X + paddle1.offsetWidth
+  ) {
+    handlePaddleHit('paddle1', socket);
+  }
+
+  if (
+    ballY >= paddle2.offsetTop - ball.offsetHeight &&
+    ballX >= paddle2X &&
+    ballX <= paddle2X + paddle2.offsetWidth
+  ) {
+    handlePaddleHit('paddle2', socket);
+  }
+
+  // Ball out of bounds (score)
+  if (ballY <= 0) {
+    score2++;
+    resetBall();
+  }
+  if (ballY >= gameArea.clientHeight - ball.offsetHeight) {
+    score1++;
+    resetBall();
+  }
+
+  // Check for game over condition
+  if (score1 === 10 || score2 === 10) {
+    gameOver = true;
+    displayGameOver();
+  }
+
+  ball.style.left = ballX + 'px';
+  ball.style.top = ballY + 'px';
+  updateScore();
 
   requestAnimationFrame(moveBall);
 }
@@ -90,11 +93,18 @@ function handlePaddleHit(paddle, socket) {
     ballY = paddle2.offsetTop - ball.offsetHeight; // Position the ball just below the paddle
   }
 
-  const hitPosition = (ballX - (paddle === 'paddle1' ? paddle1X : paddle2X)) / paddle1.offsetWidth; // Hit position from 0 to 1
+  const hitPosition =
+    (ballX - (paddle === 'paddle1' ? paddle1X : paddle2X)) /
+    paddle1.offsetWidth; // Hit position from 0 to 1
   ballSpeedX = (hitPosition - 0.5) * 4; // Adjust X speed based on hit position
 
   // Broadcast the new ball position
-  socket.emit('broadcastBallPosition', { ballX, ballY, ballSpeedX, ballSpeedY });
+  socket.emit('broadcastBallPosition', {
+    ballX,
+    ballY,
+    ballSpeedX,
+    ballSpeedY,
+  });
 }
 
 function resetBall() {
@@ -103,7 +113,12 @@ function resetBall() {
   ballSpeedX = 2 * (Math.random() > 0.5 ? 1 : -1); // Reset speed but randomize the direction
   ballSpeedY = 2 * (Math.random() > 0.5 ? 1 : -1); // Reset Y direction too
 
-  socket.emit('broadcastBallPosition', { ballX, ballY, ballSpeedX, ballSpeedY });
+  socket.emit('broadcastBallPosition', {
+    ballX,
+    ballY,
+    ballSpeedX,
+    ballSpeedY,
+  });
 }
 
 function updateScore() {
@@ -115,7 +130,9 @@ function displayGameOver() {
   ball.style.display = 'none';
 
   const gameOverMessage = document.createElement('div');
-  gameOverMessage.textContent = `Game Over. Player ${score1 === 10 ? 1 : 2} wins!`;
+  gameOverMessage.textContent = `Game Over. Player ${
+    score1 === 10 ? 1 : 2
+  } wins!`;
   gameOverMessage.style.position = 'absolute';
   gameOverMessage.style.top = '50%';
   gameOverMessage.style.left = '50%';
