@@ -25,37 +25,38 @@ html {
   border: 2px solid #fff;
 }
 
-#paddle1,
-#paddle2 {
-  width: 30vw; /* Make paddles wider for easier touch control */
-  height: 5vh; /* Increase paddle height for better touch targets */
-  background-color: #fff;
-  position: absolute;
-  left: calc(50% - 15vw); /* Center paddles horizontally */
-}
-
 #paddle1 {
+  width: 30vw; /* Paddle 1 width */
+  height: 5vh; /* Paddle 1 height */
+  background-color: #ff5733; /* Paddle 1 color (red) */
+  position: absolute;
+  left: calc(50% - 15vw); /* Center Paddle 1 horizontally */
   top: 0; /* Paddle 1 at the top */
 }
 
 #paddle2 {
+  width: 30vw; /* Paddle 2 width */
+  height: 5vh; /* Paddle 2 height */
+  background-color: #33c1ff; /* Paddle 2 color (blue) */
+  position: absolute;
+  left: calc(50% - 15vw); /* Center Paddle 2 horizontally */
   bottom: 0; /* Paddle 2 at the bottom */
 }
 
 #ball {
-  width: 4vh; /* Increase ball size for better visibility */
+  width: 4vh; /* Ball size */
   height: 4vh;
-  background-color: #fff;
+  background-color: #fff; /* Ball color */
   position: absolute;
-  border-radius: 50%;
+  border-radius: 50%; /* Make the ball circular */
 }
 
 #score {
-  color: #fff;
+  color: #fff; /* Score text color */
   position: absolute;
   top: 50%; /* Center vertically */
   left: 50%; /* Center horizontally */
   transform: translate(-50%, -50%); /* Adjust to perfectly center */
-  font-size: 5vh; /* Larger font size for better visibility */
+  font-size: 5vh; /* Score font size */
   z-index: 10; /* Ensure score is above other elements */
 }
