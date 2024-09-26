@@ -1,13 +1,28 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import 'express-async-errors';
-import cors from 'cors';
 import axios from 'axios';
+import cors from 'cors';
 import dotenv from 'dotenv';
+import fs from 'fs';
+import http from 'http';
 import morgan from 'morgan';
+import path from 'path';
+import { Server as SocketIoServer } from 'socket.io';
 import { setupSwagger } from './swagger.config';
+import { setupSocket } from './socket.config';
 
 //#region App Setup
 const app = express();
+// Create an instance of the HTTP server
+const httpServer = http.createServer(app);
+
+// Create an instance of the Socket.io server attached to the HTTP server
+const io = new SocketIoServer(httpServer, {
+  cors: {
+    origin: '*',
+  },
+});
+setupSocket(io);
 
 dotenv.config({ path: './.env' });
 const PORT = process.env.PORT || 5000;
@@ -20,10 +35,6 @@ app.use(morgan('dev'));
 setupSwagger(app, BASE_URL);
 
 //#endregion App Setup
-
-//#region Code here
-console.log('Hello world');
-//#endregion
 
 //#region Server Setup
 
@@ -92,13 +103,14 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(`${'\x1b[31m'}`); // start color red
   console.log(`${err.message}`);
   console.log(`${'\x1b][0m]'}`); //stop color
-  
+
   return res
     .status(500)
     .send({ success: false, status: 500, message: err.message });
 });
 
-app.listen(PORT, async () => {
+// Start the server
+httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
