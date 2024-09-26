@@ -99,6 +99,10 @@ function moveBall() {
     // Adjust the X speed based on where the ball hits the paddle
     const hitPosition = (ballX - paddle1X) / paddle1.offsetWidth; // Hit position from 0 to 1
     ballSpeedX = (hitPosition - 0.5) * speedIncrease * 4; // Adjust X speed based on hit position
+
+    // Increase speed
+    ballSpeedX *= speedIncrease; // Increase the speed after hitting the paddle
+    ballSpeedY *= speedIncrease; // Increase the Y speed as well
   }
 
   if (
@@ -111,6 +115,10 @@ function moveBall() {
     // Adjust the X speed based on where the ball hits the paddle
     const hitPosition = (ballX - paddle2X) / paddle2.offsetWidth; // Hit position from 0 to 1
     ballSpeedX = (hitPosition - 0.5) * speedIncrease * 4; // Adjust X speed based on hit position
+
+    // Increase speed
+    ballSpeedX *= speedIncrease; // Increase the speed after hitting the paddle
+    ballSpeedY *= speedIncrease; // Increase the Y speed as well
   }
 
   // Ball out of bounds (score)
