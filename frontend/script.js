@@ -1,4 +1,5 @@
 // script.js
+
 const gameArea = document.getElementById('gameArea');
 const paddle1 = document.getElementById('paddle1');
 const paddle2 = document.getElementById('paddle2');
@@ -19,6 +20,17 @@ let gameOver = false; // Variable to track if the game is over
 // Make paddles draggable (both mouse and touch)
 let isDragging1 = false;
 let isDragging2 = false;
+
+// Connect to the Socket.IO server
+const socket = io('http://localhost:5000');
+
+// Listen for updated paddle positions from the server
+socket.on('updatePaddlePositions', (positions) => {
+  paddle1X = positions.paddle1;
+  paddle2X = positions.paddle2;
+  paddle1.style.left = paddle1X + 'px';
+  paddle2.style.left = paddle2X + 'px';
+});
 
 // Paddle 1 drag events (Mouse)
 paddle1.addEventListener('mousedown', () => (isDragging1 = true));
@@ -58,6 +70,7 @@ document.addEventListener('touchmove', (e) => {
   }
 });
 
+// Function to handle paddle dragging
 function handleDrag(x, paddle) {
   const paddleElement = document.getElementById(paddle);
   let newX = x - gameArea.offsetLeft - paddleElement.offsetWidth / 2;
@@ -71,9 +84,11 @@ function handleDrag(x, paddle) {
   if (paddle === 'paddle1') {
     paddle1X = newX;
     paddle1.style.left = paddle1X + 'px';
+    socket.emit('movePaddle', { paddle: 'paddle1', position: paddle1X });
   } else if (paddle === 'paddle2') {
     paddle2X = newX;
     paddle2.style.left = paddle2X + 'px';
+    socket.emit('movePaddle', { paddle: 'paddle2', position: paddle2X });
   }
 }
 
@@ -159,8 +174,8 @@ function displayGameOver() {
   ball.style.display = 'none';
 
   const gameOverMessage = document.createElement('div');
-  gameOverMessage.textContent = `Game Over. ${
-    score1 === 10 ? "Red" : "Blue"
+  gameOverMessage.textContent = `Game Over. Player ${
+    score1 === 10 ? 1 : 2
   } wins!`;
   gameOverMessage.style.position = 'absolute';
   gameOverMessage.style.top = '50%';
