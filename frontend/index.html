@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ping Pong Game</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div id="gameArea">
-    <div id="paddle1"></div>
-    <div id="paddle2"></div>
-    <div id="ball"></div>
-    <div id="score">0 : 0</div>
-  </div>
-  <script src="script.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ping Pong Game</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="./app.js" defer></script>
+    <script src="./paddle.js" defer></script>
+    <script src="./ball.js" defer></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="gameArea">
+      <div id="paddle1"></div>
+      <div id="paddle2"></div>
+      <div id="ball"></div>
+      <div id="score">0 : 0</div>
+      <button id="startGameBtn" style="display: none">Start Game</button>
+    </div>
+  </body>
 </html>
