@@ -18,8 +18,8 @@ html {
 }
 
 #gameArea {
-  width: 60vw; /* Narrower width for portrait mode */
-  height: 90vh; /* Taller height for portrait mode */
+  width: 100vw; /* Use the full width of the viewport */
+  height: 90vh; /* Maintain a tall height for portrait mode */
   background-color: #222;
   position: relative;
   border: 2px solid #fff;
@@ -27,11 +27,11 @@ html {
 
 #paddle1,
 #paddle2 {
-  width: 20vw; /* Paddles are wider for easier touch control */
-  height: 2vh; /* Thin paddles */
+  width: 30vw; /* Make paddles wider for easier touch control */
+  height: 5vh; /* Increase paddle height for better touch targets */
   background-color: #fff;
   position: absolute;
-  left: calc(50% - 10vw); /* Center paddles horizontally */
+  left: calc(50% - 15vw); /* Center paddles horizontally */
 }
 
 #paddle1 {
@@ -43,8 +43,8 @@ html {
 }
 
 #ball {
-  width: 2vh; /* Ball size proportional to height */
-  height: 2vh;
+  width: 4vh; /* Increase ball size for better visibility */
+  height: 4vh;
   background-color: #fff;
   position: absolute;
   border-radius: 50%;

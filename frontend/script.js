@@ -14,6 +14,7 @@ let ballSpeedY = 2;
 let speedIncrease = 1.1; // Increase speed by 10% on each hit
 let score1 = 0;
 let score2 = 0;
+let gameOver = false; // Variable to track if the game is over
 
 // Make paddles draggable (both mouse and touch)
 let isDragging1 = false;
@@ -77,6 +78,8 @@ function handleDrag(x, paddle) {
 }
 
 function moveBall() {
+  if (gameOver) return; // Exit if the game is over
+
   ballX += ballSpeedX;
   ballY += ballSpeedY;
 
@@ -113,6 +116,12 @@ function moveBall() {
     resetBall();
   }
 
+  // Check for game over condition
+  if (score1 === 10 || score2 === 10) {
+    gameOver = true;
+    displayGameOver();
+  }
+
   ball.style.left = ballX + 'px';
   ball.style.top = ballY + 'px';
   updateScore();
@@ -129,9 +138,28 @@ function updateScore() {
   scoreDisplay.textContent = `${score1} : ${score2}`;
 }
 
+// Display game over message
+function displayGameOver() {
+  scoreDisplay.style.display = 'none';
+  ball.style.display = 'none';
+  
+  const gameOverMessage = document.createElement('div');
+  gameOverMessage.textContent = `Game Over. Player ${
+    score1 === 10 ? 1 : 2
+  } wins!`;
+  gameOverMessage.style.position = 'absolute';
+  gameOverMessage.style.top = '50%';
+  gameOverMessage.style.left = '50%';
+  gameOverMessage.style.transform = 'translate(-50%, -50%)';
+  gameOverMessage.style.fontSize = '24px';
+  gameOverMessage.style.color = 'red';
+  gameArea.appendChild(gameOverMessage);
+}
+
+// Start the game loop
 function gameLoop() {
   moveBall();
   requestAnimationFrame(gameLoop);
 }
 
-gameLoop();
+gameLoop(); // Start the game loop
