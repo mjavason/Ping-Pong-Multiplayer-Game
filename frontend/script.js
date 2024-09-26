@@ -159,8 +159,8 @@ function displayGameOver() {
   ball.style.display = 'none';
 
   const gameOverMessage = document.createElement('div');
-  gameOverMessage.textContent = `Game Over. Player ${
-    score1 === 10 ? 1 : 2
+  gameOverMessage.textContent = `Game Over. ${
+    score1 === 10 ? "Red" : "Blue"
   } wins!`;
   gameOverMessage.style.position = 'absolute';
   gameOverMessage.style.top = '50%';
